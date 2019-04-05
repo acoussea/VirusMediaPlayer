@@ -5,7 +5,8 @@ int main(){
 	char res = 'o';	
 
 	do{
-	int a, b;
+	int a = 0;
+	int b = 0;
 	char nb;
 
     	printf("Entrez la première valeur :");

