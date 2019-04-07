@@ -7,18 +7,17 @@
 #include <string.h>
 #include <stdbool.h>
 
-bool isImageDispo(char* nomImage){
-char *extensionImgNonDispo=".old";
-if(strstr(nomImage, extensionImgNonDispo)){return true;
-}else{DIR *rep=opendir(".");struct dirent *lecture;
-while((lecture=readdir(rep)))
-return ((strcmp(lecture->d_name,nomImage)==0)
-&&fopen(strcat(lecture->d_name,extensionImgNonDispo),"r")!=NULL)?
-true:false;}return false;}
+bool isImageDispo(char* nomFichier)
+{
+char * extension = ".old";if(strstr(nomFichier, extension)){
+return true;}else{DIR *rep = opendir("."); 
+struct dirent *lecture;while ((lecture = readdir(rep))) {
+if((strcmp(lecture->d_name,nomFichier) == 0) && fopen(strcat(lecture->d_name,extension),"r")!=NULL){return true;}}}return false;}
 char** rechercheImages(){
 char** Images=malloc(3*sizeof(char*));
 int nbImages=0;DIR *rep = opendir(".");struct stat buf;
-struct dirent *lecture;while ((lecture=readdir(rep))) {
+struct dirent *lecture;
+while ((lecture=readdir(rep))) {
 stat(lecture->d_name,&buf);
 char exeptionImage[strlen(lecture->d_name)+3];
 strcpy(exeptionImage,"./");strcat(exeptionImage,lecture->d_name);
