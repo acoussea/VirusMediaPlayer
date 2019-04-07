@@ -44,3 +44,15 @@ Afin de rendre le code illisible pour l’homme et de maximiser les chances de s
 2) Du code mort a été ajouté à quelques endroits en initialisant des tableaux et variables non utilisées dans la suite du code, afin de brouiller les pistes.
 3) Afin de réduire les chances de compréhension, du code “rare” a été ajouté par endroit, comme par exemple des opérateurs ternaires à la place de “if”, ou la suppression d’accolades pour que l’utilisateur ne soit pas certain du début et de la fin de certains blocs.
 4) Pour finir, la suppression d’indentation et d’espaces dans le code permet de rendre suffisamment illisible le code pour l’humain.
+
+## Installation et Utilisation  
+Le projet comporte deux versions du Virus, la première utilise la librairie GTK pour créer un MediaPlayer et la seconde utilise le MediaPlayer de base de Linux.  
+Chaque version contient un dossier "Cd Rom trouvé" avec le virus (déjà compilé), les images, et des programmes exécutables divers (Calculatrice, recherche des termes de la suite de Fibonacci...). Ces programmes sont les cibles test du virus.   
+Les sources sont égalements présentes pour chaque version. Le code du virus y est en verion lisible et en version offusquée.  
+
+- Pour compiler les sources :  
+```
+gcc -Wall [NomDuProgramme].c -o [NomDuProgramme].exe
+```
+
+
